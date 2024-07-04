@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <windows.h>
 
+#define SERVER_REPLY_SIZE 40000
 #pragma comment(lib, "Ws2_32.lib")
 
 int main(int argc, char **argv){
@@ -12,7 +13,7 @@ int main(int argc, char **argv){
     SOCKET s;
     struct sockaddr_in server_address;
     int server_fd /*file descriptor*/, recv_size;
-    char* message, server_reply[2048];
+    char* message, server_reply[SERVER_REPLY_SIZE];
 
     printf("\nStarting server");
     if(WSAStartup(MAKEWORD(2,2), &wsaData) != 0){
@@ -49,7 +50,7 @@ int main(int argc, char **argv){
 	puts("Data Send\n");
 
     //Receive a reply from the server
-	if((recv_size = recv(s , server_reply , 2048 , 0)) == SOCKET_ERROR)
+	if((recv_size = recv(s , server_reply , SERVER_REPLY_SIZE , 0)) == SOCKET_ERROR)
 	{
 		puts("recv failed");
 	}
@@ -58,7 +59,8 @@ int main(int argc, char **argv){
 
 	//Add a NULL terminating character to make it a proper string before printing
 	server_reply[recv_size] = '\0';
-	puts(server_reply);
+    FILE* output = fopen("webpage.html","w");
+	fprintf(output, server_reply);
 
 	return 0;
 }
