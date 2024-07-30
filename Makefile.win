@@ -1,7 +1,7 @@
 CC= gcc
 
 main: main.c
-	$(CC) main main.c -lWs2_32.lib
+	$(CC) main main.c -lWs2_32
 
 clean:
 	rm -a *.exe
